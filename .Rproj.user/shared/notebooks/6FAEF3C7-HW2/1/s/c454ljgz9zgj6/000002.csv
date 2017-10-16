@@ -1,0 +1,3 @@
+"0","setwd('/Users/jingwang/Desktop/BST 430/HW2')"
+"0","library(openxlsx)"
+"0","myData=read.xlsx('msleep.xlsx',startRow = 9)"

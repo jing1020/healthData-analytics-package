@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: healthDataPackage\nType: Package\nTitle: Health data analysis\nVersion: 0.1.0\nAuthor: Jing Wang <jwang163@ur.rochester.edu\nMaintainer: Jing Wang <jwang163@ur.rochester.edu>\nDescription: This package is designed for data collected from a survey that many factors can significantly influence the result that we are testing. This package helps to do some basic analysis on daily health data and helps to determine if certain facters have significant correlations with the variable that we are interested in. \nLicense: MIT + file LICENSE\nEncoding: UTF-8\nLazyData: true\nRoxygenNote: 6.0.1\nDepends: R (>= 2.10)\nSuggests: knitr,\n    rmarkdown\nImports: tidyverse,\n         googlesheets,\n         ggcorrplot,\n         ggplot2,\n         gridExtra\nVignetteBuilder: knitr\n",
+    "created" : 1507769342074.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3199047943",
+    "id" : "2C1F4D65",
+    "lastKnownWriteTime" : 1507769924,
+    "last_content_update" : 1507769924372,
+    "path" : "~/Desktop/healthData analytics package/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}

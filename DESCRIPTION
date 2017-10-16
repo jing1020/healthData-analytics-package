@@ -1,0 +1,20 @@
+Package: healthDataPackage
+Type: Package
+Title: Health data analysis
+Version: 0.1.0
+Author: Jing Wang <jwang163@ur.rochester.edu
+Maintainer: Jing Wang <jwang163@ur.rochester.edu>
+Description: This package is designed for data collected from a survey that many factors can significantly influence the result that we are testing. This package helps to do some basic analysis on daily health data and helps to determine if certain facters have significant correlations with the variable that we are interested in. 
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Depends: R (>= 2.10)
+Suggests: knitr,
+    rmarkdown
+Imports: tidyverse,
+         googlesheets,
+         ggcorrplot,
+         ggplot2,
+         gridExtra
+VignetteBuilder: knitr
