@@ -1,7 +1,7 @@
 ---
 title: "healthData package for data analysis"
 author: "Jing Wang"
-date: "`r Sys.Date()`"
+date: "12/13/2017"
 output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -22,14 +22,12 @@ I have always been interested in how daily habits(eating, exercising, etc) can c
 ###Data collection
 Once I decide the variables that might influence my weight, I collected data for each factor every day. For diet(red meat, other protein, rice and grain, vagetables, oil,snack), I used food scale to weigh them.For water, I used a cup (around 400ML/cup) to record daily water taking. In addition, I record the durations for fitness, study, entertainment and sleeping. 
 
-```{r load9, echo=FALSE,messag=FALSE}
+```{r load9, echo=FALSE,message=FALSE}
 library(tidyverse)
 library(ggplot2)
 library(googlesheets)
 dplyr::filter
-
 ```
-
 ###Import data from google sheet
 I read my Personal Health Data Sheet from google sheet
 ```{r load1, echo=FALSE,message=FALSE}
@@ -48,7 +46,10 @@ knitr::kable(head(mydata), format = "markdown", align = 'c', caption = "Personal
 
 ###Briefly know my life habit by getting the avarage for each column
 ```{r load3, echo=TRUE}
-round(apply(mydata[ ,2:14],2,mean),1)
+mydataMean=as.data.frame(round(apply(mydata[c(0:15),c(2:14)],2,mean),1))
+colnames(mydataMean)[1]="Mean"
+knitr::kable(mydataMean, format = "markdown", caption = "average life habit")
+
 ```
 From this result, I can see that my eating habit is good(eating lots of vegetables, intake proteins and grains, drink lots of water and not too much snacks). Also, the average sleep time is health (over 8hrs each day). However, I can see my bad life habit is not enough excercises(average is only 11 mins everyday).
 
@@ -56,13 +57,10 @@ From this result, I can see that my eating habit is good(eating lots of vegetabl
 ###Box plot
 I want to know how disperse my data is distributed. Even if my average number for diet looks good, it does not mean that I keep a good eating habit for every day. Box plot can help me with looking at this (I will only look at olive oil, protein in total, vagetable, grains, water and snacks)
 ```{r load4, echo=TRUE}
-par(mfrow=c(2,3))
-boxplot(mydata[1:15, ][3], main="boxplot for  olive oil (in kg)", ylab="olive oil in kg",xlab="09/13/2017-09/27/2017")
-boxplot(mydata[1:15, ][6], main="boxplot for  protein in total (in kg)", ylab="total protein in kg",xlab="09/13/2017-09/27/2017")
-boxplot(mydata[1:15, ][7], main="boxplot for  vegetables (in kg)", ylab="vegetables in kg",xlab="09/13/2017-09/27/2017")
-boxplot(mydata[1:15, ][8], main="boxplot for  rice and grain (in kg)", ylab="rice and grain in kg",xlab="09/13/2017-09/27/2017")
-boxplot(mydata[1:15, ][9], main="boxplot for  water (in cup)", ylab="water in cups",xlab="09/13/2017-09/27/2017")
-boxplot(mydata[1:15, ][10], main="boxplot for  snacks (in calories)", ylab="snacks in calories",xlab="09/13/2017-09/27/2017")
+boxplotdata= list("oliveOoil"= mydata[1:15, ][3],"totalProtein"= mydata[1:15, ][6],"vegetables" = mydata[1:15, ][7],"riceGgrain" = mydata[1:15, ][8])
+boxplotdataframe=as.data.frame(boxplotdata)
+boxplot(boxplotdataframe,col=c("blue","yellow","pink","orange"),main="box plot for food intake per day (exclude snacks)",xlab="09/13/2017-09/27/2017",ylab="weighted in g")
+boxplot(mydata[1:15, ][10], main="boxplot for  snacks ( in calories)", ylab="snacks in calories",xlab="09/13/2017-09/27/2017",col="purple")
 ```
 
 From the boxplot I can see my diet data is not too dispersed. There are only outliers for snacks. The outlier for this snack was becuase of database project due. I some times intake lots of snacks when I feel too much pressure, which is not healthy. Also, the range for rice and grain is large but the average is relatively low. This reflects that rice and grain are not stable in my diet and mostly I don't like them.
@@ -70,9 +68,9 @@ From the boxplot I can see my diet data is not too dispersed. There are only out
 
 
 ###Pearson's correlation coefficient
-By using multiCorTest(data, depenVaColname) function, I am able to test the correlations between other variables (here other varables are olive oil taken (perday), red meat taken (perday), other proteins taken (perday), protein in total (perday), vegetables taken (perday), rice and grain taken (perday), water in cups taken (perday), snacks taken (perday), fitness time, study hours, entertainment hours,sleep hours, sleep before 11 pm or not) and the variable that we are interested in (here this variable is weight (in kg)).
+By using multiCorTest(data, depenVaColname) function, I am able to test the correlations between other variables (here other varables are olive oil taken (perday), red meat taken (perday), other proteins taken (perday), protein in total (perday), vegetables taken (perday), rice and grain taken (perday), water in cups taken (perday), snacks taken (perday), fitness time, study hours, entertainment hours,sleep hours, sleep before 11 pm or not) and the variable that I am interested in (here this variable is weight (in kg)).
 ```{r load7, echo=TRUE}
-library(mynewpackage)
+library(healthDataPackage)
 multiCorTest(mydata,"Weight (in kg)")
 ```
 The correlation result shows that other proteins, snacks, fitness, study hours, entertament hours and sleep hours have positive correlation with my daily weight. That means that these factors are potentcial factors that would increase my weight. 
@@ -91,7 +89,7 @@ Explaination: This obervation explains the reason why the range of rice and grai
 
 
 ###Pvalue for Pearson's correlation tests
-Now I want to get pvalue for Pearson's correlation tests such that I know if correlation coefficient is statistically significant.By using CorTestPvalue(x=data,y=depenVaColname,z=indepenVaColname) function, you are able to get the pvlaue for correlation test between variavle y=y=depenVaColname and variable z=indepenVaColname.
+Knowing these varibales may have positve or negative on my weight, I went to explore more about if these varibales can significantly influence on my weight. I did this by taking out the Pvalue from the correlation tests.
 ```{r load8, echo=TRUE}
 MutiCorTestPvalue()
 ```
@@ -105,8 +103,8 @@ The pvalues between Weight (in kg) and Protein in total (in g), between Weight (
 ###Multiple linear regression
 Since I conclude that protein in total, vagetables, water and snacks are significanly correlated to my weight, I can build multiple linear regression model such that I can make prediction on my weight in the future. 
 ```{r load6, echo=TRUE}
-fit = lm(`Weight (in kg)`~ `Protein in total (in g)`+`Vegetables (in g)`+`Water (in cup)`+`Snacks (in calories)`, data=mydata)
-summary(fit)
+fit1 = lm(`Weight (in kg)`~ `Protein in total (in g)`+`Vegetables (in g)`+`Water (in cup)`+`Snacks (in calories)`, data=mydata)
+summary(fit1)
 ```
 
 
@@ -128,7 +126,8 @@ correlation(veg,protein) is -0.71. This is relatively high.
 
 ###Simple linear regression
 ```{r load12, echo=TRUE}
-summary(lm(mydata$`Vegetables (in g)` ~ mydata$`Protein in total (in g)`, data = mydata))
+fit2=lm(mydata$`Vegetables (in g)` ~ mydata$`Protein in total (in g)`, data = mydata)
+summary(fit2)
 ```
 
 ```{r load11, echo=TRUE}
@@ -137,13 +136,19 @@ abline(lm(mydata$`Vegetables (in g)` ~ mydata$`Protein in total (in g)`, data = 
 text(x=330,y=460,"y=605.54-0.52x")
 ```
 
-pvlaue for simple linear regression test <0.05.This indicates that their correlation coefficients are significant.Therefore, I dropped variable vegetable from my multiple linear regression model. 
-```{r load14, echo=TRUE}
-fit2 = lm(`Weight (in kg)`~ `Protein in total (in g)`+`Water (in cup)`+`Snacks (in calories)`, data=mydata)
-summary(fit2)
-```
-My final predictive model is weight=60.9279+0.0010protein-0.1489water+0.0008snacks
+pvlaue for simple linear regression test <0.05.This indicates that their correlation coefficients are significant. This multicollinearity will result in unstable parameter estimates which makes it very difficult to assess the effect of vegetables and protein intake on my weight.
 
+Now I need to consider if I want to drop one variavle from my linear model. However, looking at correlations only between vegetables and proteins is limiting. Significant correlation doesn't mean I can drop the variable. I use variance inflation factors to help detect degree of multicollinearity in my model.
+```{r load13, echo=TRUE}
+library(fmsb)
+VIF(lm(`Weight (in kg)`~ `Protein in total (in g)`+`Vegetables (in g)`+`Water (in cup)`+`Snacks (in calories)`, data=mydata))
+```
+Since the VIF for this model is less than 5, multicolinearity is not strong. I will not drop variables from my original model. My final linear model is weight=61.6992913+0.0003059protein(inGram)-0.0012039veg(inGram)-0.1517970water(inCup)+0.0012071snacks(inCalories)
+
+
+###Summary and Discussion
+My eating habit looks stable and good: lots of vegetables, some protein, some grains and enough water perday. One bad thing is I don't have stable eating habit in snacks that can increase my weight (outlier in snack intake boxplot). The other bad thing is I don't keep a good habit of doing exercise. Also, by looking at scatter plot, I found that I like eating more rice and grains when I am doing exercise, which will increase my weight. Therefore, I need to both control my grain intake and do exercise if I want to lose weight. 
+By looking at the P vlaue for correlation between my weight and other potential varibales, I conclude that protein in total, vagetables, water and snacks are significanly correlated to my weight. However, by looking at the correlation matrix, I found that there exists correlation between these variables. Vegetables and Proteins have negative and high correlation. But both of them will help exlain my weight. The right strategy to loose weight is eating more vegetables (that means less proteins).
 
 
 

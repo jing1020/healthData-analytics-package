@@ -15,10 +15,11 @@ multiCorTest=function(data, depenVaColname){
   depenVaColname = as.character(depenVaColname)
   nums = sapply(data, is.numeric)
   r = cor(data[,nums])
-  var.col <- which(colnames(r)==depenVaColname)
-  r.df = data.frame(r[,var.col])
+  var.col = which(colnames(r)==depenVaColname)
+  r.df = data.frame(round(r[,var.col],2))
   colnames(r.df) = 'correlation'
-  return(r.df)
+  r.df_= knitr::kable(r.df, format = "markdown",  align = 'c', caption = "average life habit")
+  return(r.df_)
 }
 
 
